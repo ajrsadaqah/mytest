@@ -4459,17 +4459,33 @@
         function initializeMobileUI() {
             // التحقق إذا كان الجهاز هاتفاً
             if (window.innerWidth <= 768) {
-                // إخفاء الصفحة الرئيسية في الهواتف
-                pages.home.classList.remove('active');
+                // التحقق من الصفحة النشطة حالياً
+                let currentActivePage = null;
+                Object.keys(pages).forEach(pageKey => {
+                    if (pages[pageKey].classList.contains('active')) {
+                        currentActivePage = pageKey;
+                    }
+                });
                 
-                // إظهار صفحة إدارة الطلاب كصفحة افتراضية
-                pages.students.classList.add('active');
+                // إذا كانت الصفحة النشطة هي home أو لا توجد صفحة نشطة
+                if (currentActivePage === 'home' || !currentActivePage) {
+                    // إخفاء الصفحة الرئيسية في الهواتف
+                    pages.home.classList.remove('active');
+                    
+                    // إظهار صفحة إدارة الطلاب كصفحة افتراضية
+                    pages.students.classList.add('active');
+                    
+                    // تحديث شريط التنقل السفلي
+                    updateMobileNavBar('students');
+                }
+                // إذا كانت هناك صفحة أخرى نشطة، نتركها كما هي
+                else if (currentActivePage !== 'home' && currentActivePage !== 'settings') {
+                    // تحديث شريط التنقل للصفحة النشطة الحالية
+                    updateMobileNavBar(currentActivePage);
+                }
                 
                 // إظهار حاوية التاريخ الهجري في صفحة إدارة الطلاب للهواتف
                 document.getElementById('mobileHijriDateContainer').style.display = 'block';
-                
-                // تحديث شريط التنقل السفلي
-                updateMobileNavBar('students');
                 
                 // إخفاء زر العودة في الهواتف
                 document.getElementById('backBtn').style.display = 'none';
@@ -5944,10 +5960,14 @@
             });
             
             // إعادة تهيئة الواجهة عند تغيير حجم النافذة
+            let resizeTimer;
             window.addEventListener('resize', () => {
-                initializeMobileUI();
-                updateWeeklyTableForMobile();
-                updateCalendarLayout();
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    initializeMobileUI();
+                    updateWeeklyTableForMobile();
+                    updateCalendarLayout();
+                }, 250); // انتظار 250ms بعد آخر resize قبل التنفيذ
             });
         }
 
