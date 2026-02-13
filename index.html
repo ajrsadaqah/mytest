@@ -22,7 +22,7 @@
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #BDC3C7;
+            --sa-primary-color: #F39C12;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -4817,25 +4817,38 @@
         function initializeMobileUI() {
             // التحقق إذا كان الجهاز هاتفاً
             if (window.innerWidth <= 768) {
-                // إخفاء جميع الصفحات أولاً بشكل صريح
+                // التحقق من الصفحة النشطة الحالية
+                let currentActivePage = null;
                 Object.keys(pages).forEach(key => {
-                    pages[key].classList.remove('active');
-                    pages[key].style.display = 'none';
-                    pages[key].style.visibility = 'hidden';
-                    pages[key].style.opacity = '0';
+                    if (pages[key].classList.contains('active')) {
+                        currentActivePage = key;
+                    }
                 });
                 
-                // إظهار صفحة إدارة الطلاب كصفحة افتراضية بشكل صريح
-                pages.students.classList.add('active');
-                pages.students.style.display = 'block';
-                pages.students.style.visibility = 'visible';
-                pages.students.style.opacity = '1';
+                // إذا لم تكن هناك صفحة نشطة، أو الصفحة النشطة هي home
+                // نظهر صفحة الطلاب كافتراضي
+                if (!currentActivePage || currentActivePage === 'home') {
+                    // إخفاء جميع الصفحات أولاً بشكل صريح
+                    Object.keys(pages).forEach(key => {
+                        pages[key].classList.remove('active');
+                        pages[key].style.display = 'none';
+                        pages[key].style.visibility = 'hidden';
+                        pages[key].style.opacity = '0';
+                    });
+                    
+                    // إظهار صفحة إدارة الطلاب كصفحة افتراضية بشكل صريح
+                    pages.students.classList.add('active');
+                    pages.students.style.display = 'block';
+                    pages.students.style.visibility = 'visible';
+                    pages.students.style.opacity = '1';
+                    
+                    // تحديث شريط التنقل السفلي
+                    updateMobileNavBar('students');
+                }
+                // إذا كانت هناك صفحة نشطة بالفعل (غير home)، لا نغيرها
                 
                 // إظهار حاوية التاريخ الهجري في صفحة إدارة الطلاب للهواتف
                 document.getElementById('mobileHijriDateContainer').style.display = 'block';
-                
-                // تحديث شريط التنقل السفلي
-                updateMobileNavBar('students');
                 
                 // إخفاء زر العودة في الهواتف
                 document.getElementById('backBtn').style.display = 'none';
