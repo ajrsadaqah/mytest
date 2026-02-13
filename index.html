@@ -22,7 +22,7 @@
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #7A3FCD;
+            --sa-primary-color: #2ECC71;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -119,6 +119,7 @@
             padding: 20px;
             position: relative;
             overflow-x: hidden;
+            overflow-y: auto;
         }
 
         body.dark-mode {
@@ -384,27 +385,20 @@
         }
 
         /* الصفحات العامة */
+        /* الصفحات العامة */
         .page {
-            display: none !important;
+            display: none;
             max-width: 1200px;
             margin: 0 auto;
             animation: fadeIn 0.5s ease;
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none;
+            height: 0;
+            overflow: hidden;
         }
-
+        
         .page.active {
-            display: block !important;
-            position: relative;
-            left: auto;
-            top: auto;
-            visibility: visible;
-            opacity: 1;
-            pointer-events: auto;
+            display: block;
+            height: auto;
+            overflow: visible;
         }
 
         .page-title {
@@ -2402,12 +2396,11 @@
 
             /* تعديلات على الصفحات لترك مساحة للشريط السفلي */
             body {
-                padding-bottom: 140px !important;
+                padding-bottom: 110px !important;
             }
 
             .page {
-                padding-bottom: 100px !important;
-                min-height: calc(100vh - 200px) !important;
+                padding-bottom: 20px;
             }
 
             /* تعديلات على الهيدر في الهواتف */
@@ -2561,23 +2554,23 @@
             .attendance-table-container,
             .tarteeb-table-container,
             .students-table-container {
-                margin-bottom: 100px !important;
-                padding-bottom: 80px !important;
+                margin-bottom: 20px !important;
+                padding-bottom: 10px !important;
             }
             
             .harvest-content {
-                padding-bottom: 120px !important;
+                padding-bottom: 30px !important;
             }
             
             .stats-container {
-                margin-bottom: 100px !important;
+                margin-bottom: 30px !important;
             }
             
             .action-buttons,
             .export-buttons,
             .export-buttons-weekly {
-                margin-bottom: 100px !important;
-                padding-bottom: 80px !important;
+                margin-bottom: 30px !important;
+                padding-bottom: 20px !important;
             }
             
             /* تأكيد شكل Pill للشريط السفلي */
@@ -2600,19 +2593,14 @@
             
             .page-content,
             .content-wrapper {
-                padding-bottom: 100px !important;
-            }
-            
-            /* إضافة مساحة إضافية لجميع الصفحات */
-            #students, #attendance, #tarteeb, #harvest, #settings {
-                padding-bottom: 120px !important;
+                padding-bottom: 30px !important;
             }
         }
 
         /* تحسينات للشاشات الصغيرة جداً */
         @media (max-width: 480px) {
             body {
-                padding: 8px 8px 150px 8px !important;
+                padding: 8px 8px 110px 8px !important;
             }
             
             #home,
@@ -4814,15 +4802,11 @@
         function initializeMobileUI() {
             // التحقق إذا كان الجهاز هاتفاً
             if (window.innerWidth <= 768) {
-                // إخفاء جميع الصفحات أولاً
-                Object.values(pages).forEach(page => {
-                    page.classList.remove('active');
-                    page.style.display = 'none';
-                });
+                // إخفاء الصفحة الرئيسية في الهواتف
+                pages.home.classList.remove('active');
                 
                 // إظهار صفحة إدارة الطلاب كصفحة افتراضية
                 pages.students.classList.add('active');
-                pages.students.style.display = 'block';
                 
                 // إظهار حاوية التاريخ الهجري في صفحة إدارة الطلاب للهواتف
                 document.getElementById('mobileHijriDateContainer').style.display = 'block';
@@ -4956,18 +4940,16 @@
 
         // إظهار صفحة محددة
         function showPage(pageId) {
-            // التمرير للأعلى عند تغيير الصفحة
-            window.scrollTo(0, 0);
+            // العودة للأعلى عند تغيير الصفحة
+            window.scrollTo({ top: 0, behavior: 'instant' });
             
             // إخفاء جميع الصفحات
             Object.values(pages).forEach(page => {
                 page.classList.remove('active');
-                page.style.display = 'none';
             });
             
             // إظهار الصفحة المطلوبة
             pages[pageId].classList.add('active');
-            pages[pageId].style.display = 'block';
             
             // تحديث شريط التنقل السفلي في الهواتف
             if (window.innerWidth <= 768 && pageId !== 'home' && pageId !== 'settings') {
