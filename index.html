@@ -22,7 +22,7 @@
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #D35400;
+            --sa-primary-color: #BDC3C7;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -130,13 +130,6 @@
 
         body.dark-mode.theme-eklyli {
             --hijri-date-bg: var(--ek-hijri-date-bg-dark);
-        }
-
-        /* Pages Container */
-        .pages-container {
-            position: relative;
-            width: 100%;
-            min-height: 50vh;
         }
 
         /* الشريط العلوي */
@@ -396,10 +389,29 @@
             display: none !important;
             max-width: 1200px;
             margin: 0 auto;
+            position: fixed !important;
+            left: -99999px !important;
+            top: -99999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
         
         .page.active {
             display: block !important;
+            position: static !important;
+            left: auto !important;
+            top: auto !important;
+            width: auto !important;
+            height: auto !important;
+            max-width: 1200px !important;
+            overflow: visible !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
             animation: fadeIn 0.5s ease;
         }
 
@@ -3249,10 +3261,8 @@
         </button>
     </div>
 
-    <!-- Pages Container -->
-    <div id="pagesContainer" class="pages-container">
     <!-- الصفحة الرئيسية -->
-    <div id="home" class="page active">
+    <div id="home" class="page">
         <div class="home-container">
             <h1 class="halqa-name" id="halqaNameDisplay">اسم الحلقة</h1>
             <h2 class="teacher-name" id="teacherNameDisplay">اسم المعلم</h2>
@@ -3523,7 +3533,6 @@
             </div>
         </div>
     </div>
-    </div><!-- End of pages-container -->
 
     <!-- شريط التنقل السفلي للهواتف -->
     <div id="mobileNavBar" class="mobile-nav-bar">
@@ -4758,6 +4767,12 @@
 
         // تهيئة التطبيق
         document.addEventListener('DOMContentLoaded', () => {
+            // إخفاء جميع الصفحات عند البداية
+            Object.keys(pages).forEach(key => {
+                pages[key].classList.remove('active');
+                pages[key].style.display = 'none';
+            });
+            
             loadData();
             updateUI();
             updateAllTexts();
@@ -4774,7 +4789,7 @@
             setupMonthSelector();
             setupThemeListeners();
             
-            // تهيئة واجهة الهواتف
+            // تهيئة واجهة الهواتف (سيقوم بإظهار الصفحة الصحيحة)
             initializeMobileUI();
         });
 
@@ -4825,7 +4840,17 @@
                 // إخفاء زر العودة في الهواتف
                 document.getElementById('backBtn').style.display = 'none';
             } else {
-                // في الحاسب، إخفاء حاوية التاريخ الهجري في صفحة إدارة الطلاب
+                // في الحاسب، إظهار الصفحة الرئيسية
+                Object.keys(pages).forEach(key => {
+                    pages[key].classList.remove('active');
+                    pages[key].style.display = 'none';
+                });
+                pages.home.classList.add('active');
+                pages.home.style.display = 'block';
+                pages.home.style.visibility = 'visible';
+                pages.home.style.opacity = '1';
+                
+                // إخفاء حاوية التاريخ الهجري في صفحة إدارة الطلاب
                 document.getElementById('mobileHijriDateContainer').style.display = 'none';
             }
         }
