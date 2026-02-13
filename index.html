@@ -22,7 +22,7 @@
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #E67E22;
+            --sa-primary-color: #D35400;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -394,27 +394,13 @@
         /* الصفحات العامة */
         .page {
             display: none !important;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            z-index: 1;
         }
         
         .page.active {
             display: block !important;
-            position: relative;
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
             animation: fadeIn 0.5s ease;
-            z-index: 10;
         }
 
         .page-title {
@@ -4816,11 +4802,19 @@
         function initializeMobileUI() {
             // التحقق إذا كان الجهاز هاتفاً
             if (window.innerWidth <= 768) {
-                // إخفاء الصفحة الرئيسية في الهواتف
-                pages.home.classList.remove('active');
+                // إخفاء جميع الصفحات أولاً بشكل صريح
+                Object.keys(pages).forEach(key => {
+                    pages[key].classList.remove('active');
+                    pages[key].style.display = 'none';
+                    pages[key].style.visibility = 'hidden';
+                    pages[key].style.opacity = '0';
+                });
                 
-                // إظهار صفحة إدارة الطلاب كصفحة افتراضية
+                // إظهار صفحة إدارة الطلاب كصفحة افتراضية بشكل صريح
                 pages.students.classList.add('active');
+                pages.students.style.display = 'block';
+                pages.students.style.visibility = 'visible';
+                pages.students.style.opacity = '1';
                 
                 // إظهار حاوية التاريخ الهجري في صفحة إدارة الطلاب للهواتف
                 document.getElementById('mobileHijriDateContainer').style.display = 'block';
@@ -4957,13 +4951,19 @@
             // العودة للأعلى عند تغيير الصفحة
             window.scrollTo({ top: 0, behavior: 'instant' });
             
-            // إخفاء جميع الصفحات
-            Object.values(pages).forEach(page => {
-                page.classList.remove('active');
+            // إخفاء جميع الصفحات بشكل صريح
+            Object.keys(pages).forEach(key => {
+                pages[key].classList.remove('active');
+                pages[key].style.display = 'none';
+                pages[key].style.visibility = 'hidden';
+                pages[key].style.opacity = '0';
             });
             
-            // إظهار الصفحة المطلوبة
+            // إظهار الصفحة المطلوبة بشكل صريح
             pages[pageId].classList.add('active');
+            pages[pageId].style.display = 'block';
+            pages[pageId].style.visibility = 'visible';
+            pages[pageId].style.opacity = '1';
             
             // تحديث شريط التنقل السفلي في الهواتف
             if (window.innerWidth <= 768 && pageId !== 'home' && pageId !== 'settings') {
