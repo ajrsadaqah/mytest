@@ -22,7 +22,7 @@
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #27AE60;
+            --sa-primary-color: #E67E22;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -130,6 +130,13 @@
 
         body.dark-mode.theme-eklyli {
             --hijri-date-bg: var(--ek-hijri-date-bg-dark);
+        }
+
+        /* Pages Container */
+        .pages-container {
+            position: relative;
+            width: 100%;
+            min-height: 50vh;
         }
 
         /* الشريط العلوي */
@@ -387,13 +394,27 @@
         /* الصفحات العامة */
         .page {
             display: none !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            animation: fadeIn 0.5s ease;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            z-index: 1;
         }
         
         .page.active {
             display: block !important;
+            position: relative;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            animation: fadeIn 0.5s ease;
+            z-index: 10;
         }
 
         .page-title {
@@ -3242,6 +3263,8 @@
         </button>
     </div>
 
+    <!-- Pages Container -->
+    <div id="pagesContainer" class="pages-container">
     <!-- الصفحة الرئيسية -->
     <div id="home" class="page active">
         <div class="home-container">
@@ -3514,6 +3537,7 @@
             </div>
         </div>
     </div>
+    </div><!-- End of pages-container -->
 
     <!-- شريط التنقل السفلي للهواتف -->
     <div id="mobileNavBar" class="mobile-nav-bar">
