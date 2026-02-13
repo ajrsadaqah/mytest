@@ -22,7 +22,7 @@
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #9B59B6;
+            --sa-primary-color: #27AE60;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -386,18 +386,14 @@
 
         /* الصفحات العامة */
         .page {
-            display: none;
+            display: none !important;
             max-width: 1200px;
             margin: 0 auto;
             animation: fadeIn 0.5s ease;
-            height: 0;
-            overflow: hidden;
         }
         
         .page.active {
-            display: block;
-            height: auto;
-            overflow: visible;
+            display: block !important;
         }
 
         .page-title {
