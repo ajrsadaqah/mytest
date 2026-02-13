@@ -22,7 +22,7 @@
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #A65E00;
+            --sa-primary-color: #7A3FCD;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -118,6 +118,7 @@
             min-height: 100vh;
             padding: 20px;
             position: relative;
+            overflow-x: hidden;
         }
 
         body.dark-mode {
@@ -384,10 +385,26 @@
 
         /* الصفحات العامة */
         .page {
-            display: none;
+            display: none !important;
             max-width: 1200px;
             margin: 0 auto;
             animation: fadeIn 0.5s ease;
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .page.active {
+            display: block !important;
+            position: relative;
+            left: auto;
+            top: auto;
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .page-title {
@@ -4797,11 +4814,15 @@
         function initializeMobileUI() {
             // التحقق إذا كان الجهاز هاتفاً
             if (window.innerWidth <= 768) {
-                // إخفاء الصفحة الرئيسية في الهواتف
-                pages.home.classList.remove('active');
+                // إخفاء جميع الصفحات أولاً
+                Object.values(pages).forEach(page => {
+                    page.classList.remove('active');
+                    page.style.display = 'none';
+                });
                 
                 // إظهار صفحة إدارة الطلاب كصفحة افتراضية
                 pages.students.classList.add('active');
+                pages.students.style.display = 'block';
                 
                 // إظهار حاوية التاريخ الهجري في صفحة إدارة الطلاب للهواتف
                 document.getElementById('mobileHijriDateContainer').style.display = 'block';
@@ -4935,13 +4956,18 @@
 
         // إظهار صفحة محددة
         function showPage(pageId) {
+            // التمرير للأعلى عند تغيير الصفحة
+            window.scrollTo(0, 0);
+            
             // إخفاء جميع الصفحات
             Object.values(pages).forEach(page => {
                 page.classList.remove('active');
+                page.style.display = 'none';
             });
             
             // إظهار الصفحة المطلوبة
             pages[pageId].classList.add('active');
+            pages[pageId].style.display = 'block';
             
             // تحديث شريط التنقل السفلي في الهواتف
             if (window.innerWidth <= 768 && pageId !== 'home' && pageId !== 'settings') {
