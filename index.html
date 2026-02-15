@@ -162,6 +162,12 @@
             display: none !important;
         }
 
+        body.login-active .mobile-nav-bar {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+
         /* تأكد من إخفاء home-container في صفحة تسجيل الدخول */
         #loginPage:not([style*="display: none"]) ~ * .home-container,
         #loginPage:not([style*="display: none"]) ~ * .buttons-container {
@@ -181,6 +187,15 @@
             body.login-active .home-container {
                 display: none !important;
                 visibility: hidden !important;
+            }
+
+            body.login-active .mobile-nav-bar {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                height: 0 !important;
+                overflow: hidden !important;
+                pointer-events: none !important;
             }
         }
 
@@ -530,7 +545,7 @@
             width: 100%;
             padding: 14px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 20px;
             font-size: 1.1rem;
             transition: border-color 0.3s;
         }
@@ -933,7 +948,7 @@
         body.dark-mode .students-table td {
             border-bottom-color: var(--hijri-date-bg);
             border-left-color: var(--hijri-date-bg);
-            background-color: var(--hijri-date-bg);
+            background-color: var(--dark-bg);
         }
 
         .students-table th {
@@ -944,6 +959,7 @@
 
         body.dark-mode .students-table th {
             background-color: var(--hijri-date-bg);
+            color: white;
         }
 
         .students-table th:first-child,
@@ -957,6 +973,12 @@
             z-index: 10;
             background-color: var(--card-bg);
             font-weight: bold;
+        }
+
+        body.dark-mode .students-table th:first-child,
+        body.dark-mode .students-table td:first-child {
+            background-color: var(--hijri-date-bg);
+            color: white;
         }
 
         .attendance-options {
@@ -1026,7 +1048,7 @@
             flex-grow: 1;
             padding: 14px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 20px;
             font-size: 1.1rem;
             transition: border-color 0.3s;
         }
@@ -1037,7 +1059,7 @@
         }
 
         body.dark-mode .add-student-input {
-            background-color: #2a1f15;
+            background-color: var(--dark-bg);
             color: var(--dark-text);
             border-color: var(--dark-border-color);
         }
@@ -1209,6 +1231,15 @@
         .modal-btn.save {
             background-color: var(--primary-color);
             color: white;
+        }
+        
+        /* زر الحذف - لون أحمر */
+        #confirmDeleteBtn {
+            background-color: #d32f2f !important;
+        }
+        
+        #confirmDeleteBtn:hover {
+            background-color: #b71c1c !important;
         }
 
         .modal-btn.cancel {
@@ -1442,7 +1473,7 @@
 
         body.dark-mode .month-input,
         body.dark-mode .week-select {
-            background-color: #2a1f15;
+            background-color: var(--dark-bg)5;
             color: var(--dark-text);
             border-color: var(--dark-border-color);
         }
@@ -1494,14 +1525,14 @@
         }
 
         body.dark-mode .weekly-table th {
-            background-color: var(--hijri-date-bg);
+            background-color: var(--dark-bg);
         }
 
         body.dark-mode .weekly-table th, 
         body.dark-mode .weekly-table td {
             border-bottom-color: var(--hijri-date-bg);
             border-left-color: var(--hijri-date-bg);
-            background-color: var(--hijri-date-bg);
+            background-color: var(--dark-bg);
         }
 
         .weekly-table .student-name {
@@ -1941,12 +1972,6 @@
             #attendance .date-container {
                 margin-bottom: 20px;
                 padding: 15px;
-                background-color: rgba(166, 94, 0, 0.05);
-                border-radius: 10px;
-            }
-            
-            body.dark-mode #attendance .date-container {
-                background-color: var(--hijri-date-bg);
             }
             
             /* تحسين عرض التاريخ الهجري في الهواتف */
@@ -2018,7 +2043,7 @@
             body.dark-mode .weekly-table th,
             body.dark-mode .weekly-table td {
                 border-left-color: var(--hijri-date-bg);
-                background-color: var(--hijri-date-bg);
+                background-color: var(--dark-bg);
             }
             
             /* إزالة الفراغ السفلي على الهواتف فقط */
@@ -2339,7 +2364,7 @@
         }
 
         body.dark-mode .hijri-month-input {
-            background-color: #2a1f15;
+            background-color: var(--dark-bg);
             color: var(--dark-text);
             border-color: var(--dark-border-color);
         }
@@ -2411,14 +2436,12 @@
                 display: none !important;
             }
 
-            /* شريط التنقل السفلي للهواتف - بشكل Pill عائم */
+            /* شريط التنقل السفلي للهواتف - Liquid/Glass Effect الحقيقي */
             .mobile-nav-bar {
                 position: fixed;
                 bottom: 20px;
                 left: 50%;
                 transform: translateX(-50%);
-                background-color: var(--light-bg);
-                border: 1px solid var(--border-color);
                 display: flex;
                 justify-content: space-around;
                 padding: 12px 16px;
@@ -2428,16 +2451,160 @@
                 border-radius: 35px;
                 width: calc(100% - 40px);
                 max-width: 420px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15),
-                           0 2px 8px rgba(0, 0, 0, 0.08);
-                backdrop-filter: blur(10px);
+                
+                /* Glassmorphism الحقيقي - الوضع الفاتح */
+                background: rgba(255, 255, 255, 0.25);
+                backdrop-filter: blur(30px) saturate(200%);
+                -webkit-backdrop-filter: blur(30px) saturate(200%);
+                
+                /* حدود متوهجة بـ gradient */
+                border: 2px solid transparent;
+                background-clip: padding-box;
+                position: relative;
+                
+                /* الظلال المتعددة للعمق */
+                box-shadow: 
+                    0 8px 32px 0 rgba(31, 38, 135, 0.15),
+                    0 4px 16px 0 rgba(31, 38, 135, 0.1),
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            }
+            
+            /* الحدود المتوهجة بـ gradient - الوضع الفاتح */
+            .mobile-nav-bar::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: 35px;
+                padding: 2px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(166, 94, 0, 0.4) 0%,
+                    rgba(240, 192, 144, 0.3) 25%,
+                    rgba(166, 94, 0, 0.4) 50%,
+                    rgba(240, 192, 144, 0.3) 75%,
+                    rgba(166, 94, 0, 0.4) 100%
+                );
+                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor;
+                mask-composite: exclude;
+                pointer-events: none;
+                animation: liquidBorder 3s ease-in-out infinite;
+            }
+            
+            /* الحدود المتوهجة - النسق الإكليلي الوضع الفاتح */
+            body.theme-eklyli .mobile-nav-bar::after {
+                background: linear-gradient(
+                    135deg,
+                    rgba(127, 97, 105, 0.4) 0%,
+                    rgba(216, 182, 191, 0.3) 25%,
+                    rgba(127, 97, 105, 0.4) 50%,
+                    rgba(216, 182, 191, 0.3) 75%,
+                    rgba(127, 97, 105, 0.4) 100%
+                );
+            }
+            
+            /* تأثير الضوء العلوي للزجاج */
+            .mobile-nav-bar::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 40%;
+                background: linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.6) 0%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                border-radius: 35px 35px 0 0;
+                pointer-events: none;
+                z-index: 1;
+            }
+            
+            /* تأثير الضوء العلوي - النسق الإكليلي الوضع الفاتح */
+            body.theme-eklyli .mobile-nav-bar::before {
+                background: linear-gradient(
+                    180deg,
+                    rgba(246, 238, 241, 0.6) 0%,
+                    rgba(255, 255, 255, 0) 100%
+                );
             }
 
+            /* Liquid/Glass - الوضع الداكن النسق الصحراوي */
             body.dark-mode .mobile-nav-bar {
-                background-color: rgba(26, 18, 11, 0.95);
-                border-color: var(--dark-border-color);
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
-                           0 2px 8px rgba(0, 0, 0, 0.2);
+                background: rgba(26, 18, 11, 0.3);
+                backdrop-filter: blur(40px) saturate(180%);
+                -webkit-backdrop-filter: blur(40px) saturate(180%);
+                
+                box-shadow: 
+                    0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                    0 4px 16px 0 rgba(166, 94, 0, 0.2),
+                    inset 0 0 0 1px rgba(166, 94, 0, 0.3),
+                    0 0 40px 0 rgba(166, 94, 0, 0.15);
+            }
+            
+            /* الحدود المتوهجة - الوضع الداكن الصحراوي */
+            body.dark-mode .mobile-nav-bar::after {
+                background: linear-gradient(
+                    135deg,
+                    rgba(166, 94, 0, 0.8) 0%,
+                    rgba(240, 192, 144, 0.5) 25%,
+                    rgba(166, 94, 0, 0.8) 50%,
+                    rgba(240, 192, 144, 0.5) 75%,
+                    rgba(166, 94, 0, 0.8) 100%
+                );
+            }
+            
+            /* تأثير الضوء العلوي - الوضع الداكن الصحراوي */
+            body.dark-mode .mobile-nav-bar::before {
+                background: linear-gradient(
+                    180deg,
+                    rgba(166, 94, 0, 0.3) 0%,
+                    rgba(166, 94, 0, 0) 100%
+                );
+            }
+
+            /* Liquid/Glass - الوضع الداكن النسق الإكليلي */
+            body.dark-mode.theme-eklyli .mobile-nav-bar {
+                background: rgba(38, 26, 30, 0.3);
+                box-shadow: 
+                    0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                    0 4px 16px 0 rgba(127, 97, 105, 0.2),
+                    inset 0 0 0 1px rgba(127, 97, 105, 0.3),
+                    0 0 40px 0 rgba(127, 97, 105, 0.15);
+            }
+            
+            /* الحدود المتوهجة - الوضع الداكن الإكليلي */
+            body.dark-mode.theme-eklyli .mobile-nav-bar::after {
+                background: linear-gradient(
+                    135deg,
+                    rgba(127, 97, 105, 0.8) 0%,
+                    rgba(216, 182, 191, 0.5) 25%,
+                    rgba(127, 97, 105, 0.8) 50%,
+                    rgba(216, 182, 191, 0.5) 75%,
+                    rgba(127, 97, 105, 0.8) 100%
+                );
+            }
+            
+            /* تأثير الضوء العلوي - الوضع الداكن الإكليلي */
+            body.dark-mode.theme-eklyli .mobile-nav-bar::before {
+                background: linear-gradient(
+                    180deg,
+                    rgba(127, 97, 105, 0.3) 0%,
+                    rgba(127, 97, 105, 0) 100%
+                );
+            }
+            
+            /* Animation للحدود المتوهجة */
+            @keyframes liquidBorder {
+                0%, 100% {
+                    opacity: 1;
+                    filter: hue-rotate(0deg);
+                }
+                50% {
+                    opacity: 0.8;
+                    filter: hue-rotate(10deg);
+                }
             }
 
             .mobile-nav-bar .nav-btn {
@@ -2452,29 +2619,92 @@
                 padding: 10px 8px;
                 flex: 1;
                 cursor: pointer;
-                transition: all 0.3s ease;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 min-height: 55px;
                 border-radius: 20px;
                 position: relative;
+                z-index: 2;
             }
 
             body.dark-mode .mobile-nav-bar .nav-btn {
-                color: #aaa;
+                color: #bbb;
             }
 
+            /* تأثير زجاجي للزر النشط - الوضع الفاتح */
             .mobile-nav-bar .nav-btn.active {
                 color: var(--primary-color);
-                background-color: var(--hijri-date-bg);
+                background: rgba(166, 94, 0, 0.2);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(166, 94, 0, 0.3);
+                box-shadow: 
+                    0 4px 15px rgba(166, 94, 0, 0.25),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                    0 0 20px rgba(166, 94, 0, 0.15);
             }
             
+            /* تأثير زجاجي للزر النشط - النسق الإكليلي الوضع الفاتح */
+            body.theme-eklyli .mobile-nav-bar .nav-btn.active {
+                background: rgba(127, 97, 105, 0.2);
+                border: 1px solid rgba(127, 97, 105, 0.3);
+                box-shadow: 
+                    0 4px 15px rgba(127, 97, 105, 0.25),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                    0 0 20px rgba(127, 97, 105, 0.15);
+            }
+            
+            /* تأثير زجاجي للزر النشط - الوضع الداكن الصحراوي */
             body.dark-mode .mobile-nav-bar .nav-btn.active {
-                background-color: var(--hijri-date-bg);
+                background: rgba(166, 94, 0, 0.35);
+                backdrop-filter: blur(15px);
+                border: 1px solid rgba(166, 94, 0, 0.5);
+                box-shadow: 
+                    0 4px 20px rgba(166, 94, 0, 0.4),
+                    inset 0 1px 0 rgba(240, 192, 144, 0.3),
+                    0 0 30px rgba(166, 94, 0, 0.25);
+                color: var(--primary-light);
+            }
+            
+            /* تأثير زجاجي للزر النشط - النسق الإكليلي */
+            body.dark-mode.theme-eklyli .mobile-nav-bar .nav-btn.active {
+                background: rgba(127, 97, 105, 0.35);
+                border: 1px solid rgba(127, 97, 105, 0.5);
+                box-shadow: 
+                    0 4px 20px rgba(127, 97, 105, 0.4),
+                    inset 0 1px 0 rgba(216, 182, 191, 0.3),
+                    0 0 30px rgba(127, 97, 105, 0.25);
+                color: var(--primary-light);
             }
 
             .mobile-nav-bar .nav-btn i {
                 font-size: 1.5rem;
                 margin-bottom: 4px;
                 transition: all 0.3s ease;
+            }
+            
+            /* تأثير hover للأزرار غير النشطة - جميع الأوضاع */
+            .mobile-nav-bar .nav-btn:not(.active):hover {
+                background: rgba(166, 94, 0, 0.1);
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(166, 94, 0, 0.2);
+                transform: translateY(-2px);
+            }
+            
+            /* تأثير hover - النسق الإكليلي الوضع الفاتح */
+            body.theme-eklyli .mobile-nav-bar .nav-btn:not(.active):hover {
+                background: rgba(127, 97, 105, 0.1);
+                border: 1px solid rgba(127, 97, 105, 0.2);
+            }
+            
+            body.dark-mode .mobile-nav-bar .nav-btn:not(.active):hover {
+                background: rgba(166, 94, 0, 0.2);
+                border: 1px solid rgba(166, 94, 0, 0.3);
+                box-shadow: 0 4px 12px rgba(166, 94, 0, 0.2);
+            }
+            
+            body.dark-mode.theme-eklyli .mobile-nav-bar .nav-btn:not(.active):hover {
+                background: rgba(127, 97, 105, 0.2);
+                border: 1px solid rgba(127, 97, 105, 0.3);
+                box-shadow: 0 4px 12px rgba(127, 97, 105, 0.2);
             }
 
             .mobile-nav-bar .nav-btn.active i {
@@ -3122,7 +3352,7 @@
         }
 
         body.dark-mode .hijri-month-input {
-            background-color: #2a1f15;
+            background-color: var(--dark-bg);
             color: var(--dark-text);
             border-color: var(--dark-border-color);
         }
@@ -3223,7 +3453,6 @@
             
             <!-- العنوان الرئيسي -->
             <div style="text-align: center; margin-bottom: 40px;">
-                <div style="font-size: 3.5rem; margin-bottom: 10px;">📚</div>
                 <h1 style="color: var(--primary-color); font-size: 2.5rem; font-weight: bold; margin-bottom: 8px;">إدارة الحلقة القرآنية</h1>
                 <p style="color: var(--light-text); opacity: 0.7; font-size: 1.1rem;">منصة سهلة لإدارة حلقتك القرآنية</p>
             </div>
@@ -3249,7 +3478,7 @@
                 
                 <!-- معلومات إضافية -->
                 <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center;">
-                    <p style="margin: 0; color: var(--light-text); opacity: 0.6; font-size: 0.85rem;">🔒 آمن ومحمي</p>
+                    <p style="margin: 0; color: var(--light-text); opacity: 0.6; font-size: 0.85rem;">آمن ومحمي</p>
                 </div>
             </div>
         </div>
@@ -3306,6 +3535,60 @@
             <div class="modal-actions">
                 <button id="saveEditBtn" class="modal-btn save" onclick="saveEditedStudent()">موافق</button>
                 <button id="cancelEditBtn" class="modal-btn cancel" onclick="closeEditStudentModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد الحذف -->
+    <div id="confirmDeleteModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmDeleteTitle">تأكيد الحذف</h3>
+                <button class="close-modal" onclick="closeConfirmDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="confirm-message" id="confirmDeleteMessage" style="text-align: center; font-size: 1.2rem; line-height: 1.8;">
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button id="confirmDeleteBtn" class="modal-btn save" style="background-color: #d32f2f;">حذف</button>
+                <button id="cancelDeleteBtn" class="modal-btn cancel" onclick="closeConfirmDeleteModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الإشعارات -->
+    <div id="alertModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="alertModalTitle">تنبيه</h3>
+                <button class="close-modal" onclick="closeAlertModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="confirm-message" id="alertModalMessage" style="text-align: center; font-size: 1.2rem; line-height: 1.8;">
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button id="alertModalBtn" class="modal-btn save" onclick="closeAlertModal()">حسنًا</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد تسجيل الخروج -->
+    <div id="logoutConfirmModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="logoutConfirmTitle">تأكيد تسجيل الخروج</h3>
+                <button class="close-modal" onclick="closeLogoutConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="confirm-message" id="logoutConfirmMessage" style="text-align: center; font-size: 1.2rem; line-height: 1.8;">
+                    هل أنت متأكد من تسجيل الخروج؟
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button id="logoutConfirmBtn" class="modal-btn save">متأكد</button>
+                <button id="logoutCancelBtn" class="modal-btn cancel" onclick="closeLogoutConfirmModal()">عودة</button>
             </div>
         </div>
     </div>
@@ -3467,8 +3750,8 @@
                 <div style="text-align: center; margin-bottom: 15px;">
                     <p style="color: #666; font-size: 0.95rem;" id="currentUserEmail">مسجل الدخول كـ: ...</p>
                 </div>
-                <button class="save-btn" id="logoutBtn" style="background-color: #dc3545;">
-                    🚪 تسجيل الخروج
+                <button class="save-btn" id="logoutBtn" style="background-color: rgba(162, 68, 12, 1) !important;">
+                    تسجيل الخروج
                 </button>
             </div>
         </div>
@@ -3802,6 +4085,22 @@
                 studentPossessive: "لطالب",
                 noStudentsMessage: "لا يوجد طلاب مسجلين",
                 
+                // رسائل الحذف والتكرار
+                confirmDeleteTitle: "تأكيد الحذف",
+                confirmDeleteMessage: "هل أنت متأكد من حذف الطالب",
+                confirmDeleteButton: "موافق",
+                cancelButton: "إلغاء",
+                duplicateStudentTitle: "تنبيه",
+                duplicateStudentMessage: "الطالب موجود بالفعل!",
+                okButton: "حسنًا",
+                emptyStudentNameMessage: "الرجاء إدخال اسم الطالب",
+                
+                // تسجيل الخروج
+                logoutConfirmTitle: "تأكيد تسجيل الخروج",
+                logoutConfirmMessage: "هل أنت متأكد من تسجيل الخروج؟",
+                logoutConfirmButton: "متأكد",
+                logoutCancelButton: "عودة",
+                
                 // رسائل إضافية
                 noStudentsInQueue: "لا يوجد طلاب في دور التسميع",
                 noStudentsCompleted: "لا يوجد طلاب سمّعوا",
@@ -3881,6 +4180,22 @@
                 studentNoun: "الطالبة",
                 studentPossessive: "لطالبة",
                 noStudentsMessage: "لا يوجد طالبات مسجلات",
+                
+                // رسائل الحذف والتكرار
+                confirmDeleteTitle: "تأكيد الحذف",
+                confirmDeleteMessage: "هل أنتِ متأكدة من حذف الطالبة",
+                confirmDeleteButton: "موافقة",
+                cancelButton: "إلغاء",
+                duplicateStudentTitle: "تنبيه",
+                duplicateStudentMessage: "الطالبة موجودة بالفعل!",
+                okButton: "حسنًا",
+                emptyStudentNameMessage: "الرجاء إدخال اسم الطالبة",
+                
+                // تسجيل الخروج
+                logoutConfirmTitle: "تأكيد تسجيل الخروج",
+                logoutConfirmMessage: "هل أنتِ متأكدة من تسجيل الخروج؟",
+                logoutConfirmButton: "متأكدة",
+                logoutCancelButton: "عودة",
                 
                 // رسائل إضافية
                 noStudentsInQueue: "لا يوجد طالبات في دور التسميع",
@@ -4005,6 +4320,19 @@
             
             const confirmBtn = document.getElementById('confirmReturnBtn');
             if (confirmBtn) confirmBtn.textContent = texts.confirmAction;
+            
+            // تحديث نافذة تسجيل الخروج
+            const logoutConfirmTitle = document.getElementById('logoutConfirmTitle');
+            if (logoutConfirmTitle) logoutConfirmTitle.textContent = texts.logoutConfirmTitle;
+            
+            const logoutConfirmMessage = document.getElementById('logoutConfirmMessage');
+            if (logoutConfirmMessage) logoutConfirmMessage.textContent = texts.logoutConfirmMessage;
+            
+            const logoutConfirmBtn = document.getElementById('logoutConfirmBtn');
+            if (logoutConfirmBtn) logoutConfirmBtn.textContent = texts.logoutConfirmButton;
+            
+            const logoutCancelBtn = document.getElementById('logoutCancelBtn');
+            if (logoutCancelBtn) logoutCancelBtn.textContent = texts.logoutCancelButton;
             
             // 10. تحديث جدول الحصاد إذا كان مفتوحاً
             if (pages.harvest && pages.harvest.classList.contains('active')) {
@@ -4139,8 +4467,29 @@
         }
 
         // ============================================
-        // إخفاء جميع العناصر حتى يتم التحقق من تسجيل الدخول
+        // تحميل الإعدادات المحفوظة قبل عرض أي شيء
         // ============================================
+        (function() {
+            const savedData = localStorage.getItem('halqaAppData');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    
+                    // تطبيق الوضع الداكن إذا كان محفوظاً
+                    if (data.darkMode === true) {
+                        document.body.classList.add('dark-mode');
+                    }
+                    
+                    // تطبيق النسق إذا كان محفوظاً
+                    if (data.theme === 'ek') {
+                        document.body.classList.add('theme-eklyli');
+                    }
+                } catch (e) {
+                    console.error('خطأ في تحميل الإعدادات:', e);
+                }
+            }
+        })();
+        
         // ============================================
         // إخفاء جميع العناصر حتى يتم التحقق من تسجيل الدخول
         // ============================================
@@ -4927,6 +5276,7 @@
             });
             
             loadData();
+            updateHijriDateAutomatically(); // تحديث التاريخ تلقائياً
             updateUI();
             updateAllTexts();
             renderStudentsList();
@@ -5032,6 +5382,38 @@
         }
 
         // تحميل البيانات من localStorage
+        // دالة لتحديث التاريخ الهجري تلقائياً بناءً على التاريخ الميلادي الحالي
+        function updateHijriDateAutomatically() {
+            const today = new Date();
+            const day = today.getDate();
+            const month = today.getMonth() + 1; // JavaScript months are 0-based
+            const year = today.getFullYear();
+            
+            try {
+                const hijriDate = HijriJS.gregorianToHijri(year, month, day);
+                
+                if (hijriDate && hijriDate.year && hijriDate.month && hijriDate.day) {
+                    // تحديث التاريخ الهجري في appData
+                    appData.hijriDate = {
+                        year: hijriDate.year,
+                        month: hijriDate.month,
+                        day: hijriDate.day
+                    };
+                    
+                    // تحديث التواريخ الحالية لجميع الصفحات
+                    currentTarteebDate = { ...appData.hijriDate };
+                    currentAttendanceDate = { ...appData.hijriDate };
+                    currentHarvestDate = { ...appData.hijriDate };
+                    
+                    console.log('✅ تم تحديث التاريخ الهجري تلقائياً:', formatHijriDate(hijriDate.year, hijriDate.month, hijriDate.day));
+                    
+                    saveData(); // حفظ التاريخ الجديد
+                }
+            } catch (error) {
+                console.error('❌ خطأ في تحديث التاريخ الهجري:', error);
+            }
+        }
+
         function loadData() {
             const savedData = localStorage.getItem('halqaAppData');
             if (savedData) {
@@ -5251,13 +5633,15 @@
             const newStudentInput = document.getElementById('newStudent');
             const newStudentName = newStudentInput.value.trim();
             
+            const texts = textDictionary[appData.theme];
+            
             if (!newStudentName) {
-                alert('الرجاء إدخال اسم الطالب');
+                showAlertModal(texts.duplicateStudentTitle, 'الرجاء إدخال اسم ' + texts.studentNoun);
                 return;
             }
             
             if (appData.students.includes(newStudentName)) {
-                alert('الطالب موجود بالفعل!');
+                showAlertModal(texts.duplicateStudentTitle, texts.duplicateStudentMessage);
                 return;
             }
             
@@ -5271,16 +5655,16 @@
 
         // حذف طالب
         function deleteStudent(index) {
-            const texts = textDictionary[appData.theme];
-            const studentLabel = (appData.theme === 'ek') ? 'الطالبة' : 'الطالب';
+            const studentName = appData.students[index];
             
-            if (confirm(`${texts.confirmDeleteMessage} "${appData.students[index]}"؟`)) {
+            // إظهار نافذة تأكيد الحذف
+            showConfirmDeleteModal(studentName, index, () => {
                 appData.students.splice(index, 1);
                 saveData();
                 renderStudentsList();
                 renderAttendancePage();
                 renderTarteebPage();
-            }
+            });
         }
 
         // متغير لتخزين الفهرس الحالي للطالب الذي يتم تعديله
@@ -5322,7 +5706,7 @@
             // التحقق من أن الاسم غير فارغ
             if (!newName) {
                 const texts = textDictionary[appData.theme];
-                alert('الرجاء إدخال اسم ' + ((appData.theme === 'ek') ? 'الطالبة' : 'الطالب'));
+                showAlertModal(texts.duplicateStudentTitle, texts.emptyStudentNameMessage);
                 return;
             }
             
@@ -5381,6 +5765,119 @@
             modal.classList.remove('active');
             currentEditingIndex = -1;
         }
+
+        // ========================================
+        // دوال نافذة تأكيد الحذف
+        // ========================================
+        let deleteStudentIndex = -1;
+        let deleteStudentCallback = null;
+
+        // إظهار نافذة تأكيد الحذف
+        function showConfirmDeleteModal(studentName, index, callback) {
+            const texts = textDictionary[appData.theme];
+            const modal = document.getElementById('confirmDeleteModal');
+            const title = document.getElementById('confirmDeleteTitle');
+            const message = document.getElementById('confirmDeleteMessage');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            
+            // تعيين النصوص حسب النسق
+            title.textContent = texts.confirmDeleteTitle;
+            message.textContent = `${texts.confirmDeleteMessage} "${studentName}"؟`;
+            confirmBtn.textContent = texts.confirmDeleteButton;
+            
+            // حفظ البيانات
+            deleteStudentIndex = index;
+            deleteStudentCallback = callback;
+            
+            // إظهار النافذة
+            modal.classList.add('active');
+        }
+
+        // إغلاق نافذة تأكيد الحذف
+        function closeConfirmDeleteModal() {
+            const modal = document.getElementById('confirmDeleteModal');
+            modal.classList.remove('active');
+            deleteStudentIndex = -1;
+            deleteStudentCallback = null;
+        }
+
+        // تأكيد الحذف
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            if (deleteStudentCallback) {
+                deleteStudentCallback();
+            }
+            closeConfirmDeleteModal();
+        });
+
+        // ========================================
+        // دوال نافذة الإشعارات
+        // ========================================
+        
+        // إظهار نافذة إشعار
+        function showAlertModal(title, message, buttonText = null) {
+            const texts = textDictionary[appData.theme];
+            const modal = document.getElementById('alertModal');
+            const modalTitle = document.getElementById('alertModalTitle');
+            const modalMessage = document.getElementById('alertModalMessage');
+            const modalBtn = document.getElementById('alertModalBtn');
+            
+            // تعيين النصوص
+            modalTitle.textContent = title || texts.duplicateStudentTitle;
+            modalMessage.textContent = message;
+            modalBtn.textContent = buttonText || texts.okButton;
+            
+            // إظهار النافذة
+            modal.classList.add('active');
+        }
+
+        // إغلاق نافذة الإشعار
+        function closeAlertModal() {
+            const modal = document.getElementById('alertModal');
+            modal.classList.remove('active');
+        }
+
+        // ========================================
+        // دوال نافذة تأكيد تسجيل الخروج
+        // ========================================
+        
+        let logoutCallback = null;
+        
+        // إظهار نافذة تأكيد تسجيل الخروج
+        function showLogoutConfirmModal(callback) {
+            const texts = textDictionary[appData.theme];
+            const modal = document.getElementById('logoutConfirmModal');
+            const title = document.getElementById('logoutConfirmTitle');
+            const message = document.getElementById('logoutConfirmMessage');
+            const confirmBtn = document.getElementById('logoutConfirmBtn');
+            const cancelBtn = document.getElementById('logoutCancelBtn');
+            
+            // تعيين النصوص حسب النسق
+            title.textContent = texts.logoutConfirmTitle;
+            message.textContent = texts.logoutConfirmMessage;
+            confirmBtn.textContent = texts.logoutConfirmButton;
+            cancelBtn.textContent = texts.logoutCancelButton;
+            
+            // حفظ callback
+            logoutCallback = callback;
+            
+            // إظهار النافذة
+            modal.classList.add('active');
+        }
+        
+        // إغلاق نافذة تأكيد تسجيل الخروج
+        function closeLogoutConfirmModal() {
+            const modal = document.getElementById('logoutConfirmModal');
+            modal.classList.remove('active');
+            logoutCallback = null;
+        }
+        
+        // تأكيد تسجيل الخروج
+        document.getElementById('logoutConfirmBtn').addEventListener('click', () => {
+            if (logoutCallback) {
+                logoutCallback();
+            }
+            closeLogoutConfirmModal();
+        });
 
         // عرض قائمة الطلاب في صفحة الإدارة
         function renderStudentsList() {
@@ -7918,60 +8415,124 @@
             try {
                 console.log('📥 بدء تحميل البيانات من Firestore للمستخدم:', currentUser.uid);
 
-                // تحميل البيانات الرئيسية
-                const dataDoc = await db.collection('users').doc(currentUser.uid).collection('appData').doc('main').get();
-                if (dataDoc.exists) {
-                    const data = dataDoc.data();
-                    
-                    console.log('📊 البيانات المحملة:', {
-                        students: data.students?.length || 0,
-                        halqaName: data.halqaName
-                    });
-                    
-                    if (data.halqaName) appData.halqaName = data.halqaName;
-                    if (data.teacherName) appData.teacherName = data.teacherName;
-                    if (data.students) appData.students = data.students;
-                    if (data.attendance) appData.attendance = data.attendance;
-                    if (data.tarteeb) appData.tarteeb = data.tarteeb;
-                    if (data.notes) appData.notes = data.notes;
-                    
-                    console.log('✅ تم تحميل البيانات الرئيسية');
-                } else {
-                    console.log('ℹ️ لا توجد بيانات محفوظة - مستخدم جديد');
-                }
-
-                // تحميل الإعدادات
+                // ========================================
+                // 1. تحميل الإعدادات أولاً
+                // ========================================
                 const settingsDoc = await db.collection('users').doc(currentUser.uid).collection('appData').doc('settings').get();
                 if (settingsDoc.exists) {
                     const settings = settingsDoc.data();
                     
+                    console.log('⚙️ الإعدادات المحملة:', settings);
+                    
+                    // إزالة الكلاسات القديمة أولاً
+                    document.body.classList.remove('dark-mode', 'theme-eklyli');
+                    
+                    // تطبيق النسق
                     if (settings.theme) {
                         appData.theme = settings.theme;
                         if (settings.theme === 'ek') {
                             document.body.classList.add('theme-eklyli');
+                            console.log('✅ تم تطبيق النسق: الإكليلي');
+                        } else {
+                            console.log('✅ تم تطبيق النسق: الصحراوي');
                         }
                     }
 
+                    // تطبيق الوضع الداكن
                     if (settings.darkMode !== undefined) {
                         appData.darkMode = settings.darkMode;
                         if (settings.darkMode) {
                             document.body.classList.add('dark-mode');
+                            console.log('✅ تم تطبيق الوضع الداكن');
+                        } else {
+                            console.log('✅ تم تطبيق الوضع الفاتح');
                         }
                     }
 
-                    console.log('✅ تم تحميل الإعدادات');
+                    console.log('✅ تم تحميل وتطبيق الإعدادات');
+                } else {
+                    console.log('ℹ️ لا توجد إعدادات محفوظة - استخدام الافتراضية');
                 }
 
-                // تحديث الواجهة
+                // ========================================
+                // 2. تحميل البيانات الرئيسية
+                // ========================================
+                const dataDoc = await db.collection('users').doc(currentUser.uid).collection('appData').doc('main').get();
+                if (dataDoc.exists) {
+                    const data = dataDoc.data();
+                    
+                    console.log('📊 البيانات الرئيسية المحملة:', {
+                        halqaName: data.halqaName,
+                        teacherName: data.teacherName,
+                        students: data.students?.length || 0,
+                        attendance: Object.keys(data.attendance || {}).length,
+                        tarteeb: Object.keys(data.tarteeb || {}).length
+                    });
+                    
+                    // تحميل بيانات الحلقة
+                    if (data.halqaName) {
+                        appData.halqaName = data.halqaName;
+                        console.log('✅ اسم الحلقة:', data.halqaName);
+                    }
+                    
+                    if (data.teacherName) {
+                        appData.teacherName = data.teacherName;
+                        console.log('✅ اسم المعلم:', data.teacherName);
+                    }
+                    
+                    // تحميل الطلاب
+                    if (data.students && Array.isArray(data.students)) {
+                        appData.students = data.students;
+                        console.log('✅ عدد الطلاب:', data.students.length);
+                    }
+                    
+                    // تحميل الحضور
+                    if (data.attendance) {
+                        appData.attendance = data.attendance;
+                        console.log('✅ سجلات الحضور:', Object.keys(data.attendance).length);
+                    }
+                    
+                    // تحميل الترتيب
+                    if (data.tarteeb) {
+                        appData.tarteeb = data.tarteeb;
+                        console.log('✅ سجلات الترتيب:', Object.keys(data.tarteeb).length);
+                    }
+                    
+                    // تحميل الملاحظات
+                    if (data.notes) {
+                        appData.notes = data.notes;
+                        console.log('✅ الملاحظات:', Object.keys(data.notes).length);
+                    }
+                    
+                    console.log('✅ تم تحميل جميع البيانات الرئيسية');
+                } else {
+                    console.log('ℹ️ لا توجد بيانات محفوظة - مستخدم جديد');
+                }
+
+                // ========================================
+                // 3. تحديث الواجهة
+                // ========================================
+                console.log('🔄 تحديث الواجهة...');
+                
+                // تحديث الواجهة بالبيانات المحملة
                 updateUI();
+                
+                // تحديث قائمة الطلاب
                 renderStudentsList();
                 
-                console.log('🎉 ✅ تم تحميل جميع البيانات بنجاح!');
+                // تحديث عرض التاريخ الهجري
+                updateHijriDateDisplay();
+                
+                console.log('✅ تم تحديث الواجهة');
+                console.log('🎉 ✅ اكتمل تحميل جميع البيانات بنجاح!');
 
             } catch (error) {
                 console.error('❌ خطأ في تحميل البيانات من Firestore:', error);
                 console.error('تفاصيل الخطأ:', error.message);
+                console.error('Stack:', error.stack);
+                
                 // في حالة الخطأ، نحمل من localStorage
+                console.log('⚠️ محاولة التحميل من localStorage...');
                 loadDataFromLocalStorage();
             }
         }
@@ -8055,15 +8616,16 @@
             
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', async () => {
-                    if (confirm('هل تريد تسجيل الخروج؟')) {
+                    showLogoutConfirmModal(async () => {
                         try {
                             await auth.signOut();
                             console.log('✅ تم تسجيل الخروج');
                         } catch (error) {
                             console.error('❌ خطأ في تسجيل الخروج:', error);
-                            alert('حدث خطأ في تسجيل الخروج');
+                            const texts = textDictionary[appData.theme];
+                            showAlertModal('خطأ', 'حدث خطأ في تسجيل الخروج');
                         }
-                    }
+                    });
                 });
             }
             
