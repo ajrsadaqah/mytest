@@ -17,12 +17,18 @@
     <!-- مكتبات PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- مكتبات Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <title>إدارة حلقة قرآنية</title>
     <style>
         /* متغيرات الألوان - النسق الصحراوي (الافتراضي) */
         :root {
             /* ===== النسق الصحراوي (sa) ===== */
-            --sa-primary-color: #F39C12;
+            --sa-primary-color: #A65E00;
             --sa-primary-light: #F0C090;
             --sa-secondary-light: #E8F4FD;
             --sa-save-color: #E8D0B3;
@@ -37,8 +43,7 @@
             --sa-border-color: #ddd;
             --sa-dark-border-color: #3a2c1c;
             --sa-hijri-date-bg: rgba(166, 94, 0, 0.08);
-            --sa-hijri-date-bg: rgba(166, 94, 0, 0.08);
-            --sa-hijri-date-bg-dark: rgba(237, 209, 175, 0.1);
+            --sa-hijri-date-bg-dark: #2a1f15;
 
             /* ===== النسق الإكليلي (ek) ===== */
             --ek-primary-color: #7F6169;
@@ -56,8 +61,7 @@
             --ek-border-color: #E2D6DA;
             --ek-dark-border-color: #3D2A30;
             --ek-hijri-date-bg: rgba(127, 97, 105, 0.08);
-            --ek-hijri-date-bg: rgba(127, 97, 105, 0.08);
-            --ek-hijri-date-bg-dark: rgba(231, 214, 219, 0.1);
+            --ek-hijri-date-bg-dark: #2d2024;
 
 
             /* المتغيرات النشطة (افتراضيًا الصحراوي) */
@@ -126,10 +130,82 @@
             background-color: var(--dark-bg);
             color: var(--dark-text);
             --hijri-date-bg: var(--sa-hijri-date-bg-dark);
+            --border-color: var(--sa-hijri-date-bg-dark);
+            --dark-border-color: var(--sa-hijri-date-bg-dark);
         }
 
         body.dark-mode.theme-eklyli {
             --hijri-date-bg: var(--ek-hijri-date-bg-dark);
+            --border-color: var(--ek-hijri-date-bg-dark);
+            --dark-border-color: var(--ek-hijri-date-bg-dark);
+        }
+
+        /* تنسيق صفحة تسجيل الدخول */
+        body.login-active {
+            overflow: hidden !important;
+        }
+
+        /* إخفاء كل العناصر عدا صفحة تسجيل الدخول */
+        body.login-active .header {
+            display: none !important;
+        }
+
+        body.login-active .home-container {
+            display: none !important;
+        }
+
+        body.login-active .page {
+            display: none !important;
+        }
+
+        body.login-active .buttons-container {
+            display: none !important;
+        }
+
+        /* تأكد من إخفاء home-container في صفحة تسجيل الدخول */
+        #loginPage:not([style*="display: none"]) ~ * .home-container,
+        #loginPage:not([style*="display: none"]) ~ * .buttons-container {
+            display: none !important;
+        }
+
+        /* على الجوال: إخفاء الشريط السفلي بشكل خاص */
+        @media (max-width: 767px) {
+            body.login-active .buttons-container {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                height: 0 !important;
+                overflow: hidden !important;
+            }
+            
+            body.login-active .home-container {
+                display: none !important;
+                visibility: hidden !important;
+            }
+        }
+
+        #loginPage {
+            transition: opacity 0.3s ease;
+        }
+
+        /* تنسيق الوضع الداكن لصفحة تسجيل الدخول */
+        body.dark-mode #loginPage {
+            background-color: var(--dark-bg);
+        }
+
+        body.dark-mode #loginPage .login-card {
+            background: var(--dark-card-bg);
+            border-color: var(--dark-border-color);
+            color: var(--dark-text);
+        }
+
+        body.dark-mode #loginPage h1,
+        body.dark-mode #loginPage h2 {
+            color: var(--dark-text);
+        }
+
+        body.dark-mode #loginPage p {
+            color: var(--dark-text);
         }
 
         /* الشريط العلوي */
@@ -219,7 +295,7 @@
         }
 
         body.dark-mode .teacher-name {
-            background-color: rgba(237, 209, 175, 0.1);
+            background-color: var(--hijri-date-bg);
         }
 
         /* تنسيق التاريخ الهجري في الصفحة الرئيسية */
@@ -482,7 +558,7 @@
         }
 
         body.dark-mode .theme-segmented-container {
-            background-color: rgba(237, 209, 175, 0.05);
+            background-color: var(--hijri-date-bg);
         }
 
         .theme-segmented-label {
@@ -540,7 +616,7 @@
         }
 
         body.dark-mode .toggle-container {
-            background-color: rgba(237, 209, 175, 0.05);
+            background-color: var(--hijri-date-bg);
         }
 
         .toggle-label {
@@ -637,7 +713,7 @@
         }
 
         body.dark-mode .current-hijri-date {
-            background-color: rgba(237, 209, 175, 0.1);
+            background-color: var(--hijri-date-bg);
         }
 
         .date-navigation {
@@ -829,6 +905,10 @@
             overflow: hidden;
         }
 
+        body.dark-mode .students-table {
+            border-color: var(--hijri-date-bg);
+        }
+
         .weekly-container {
             margin-top: 20px;
         }
@@ -851,7 +931,9 @@
 
         body.dark-mode .students-table th, 
         body.dark-mode .students-table td {
-            border-bottom-color: var(--dark-border-color);
+            border-bottom-color: var(--hijri-date-bg);
+            border-left-color: var(--hijri-date-bg);
+            background-color: var(--hijri-date-bg);
         }
 
         .students-table th {
@@ -861,7 +943,7 @@
         }
 
         body.dark-mode .students-table th {
-            background-color: rgba(237, 209, 175, 0.1);
+            background-color: var(--hijri-date-bg);
         }
 
         .students-table th:first-child,
@@ -1101,7 +1183,7 @@
         }
         
         body.dark-mode #editStudentNameInput:focus {
-            box-shadow: 0 0 0 3px rgba(237, 209, 175, 0.1) !important;
+            box-shadow: 0 0 0 3px var(--hijri-date-bg) !important;
         }
         
         /* المسافة بين محتوى النافذة والأزرار */
@@ -1304,7 +1386,7 @@
         }
 
         body.dark-mode .harvest-tabs {
-            background-color: rgba(237, 209, 175, 0.1);
+            background-color: var(--hijri-date-bg);
         }
 
         /* محتوى التبويبات */
@@ -1381,6 +1463,10 @@
             overflow: hidden;
         }
 
+        body.dark-mode .weekly-table {
+            border-color: var(--hijri-date-bg);
+        }
+
         .weekly-table th, .weekly-table td {
             padding: 15px 12px;
             text-align: center;
@@ -1408,12 +1494,14 @@
         }
 
         body.dark-mode .weekly-table th {
-            background-color: rgba(237, 209, 175, 0.1);
+            background-color: var(--hijri-date-bg);
         }
 
         body.dark-mode .weekly-table th, 
         body.dark-mode .weekly-table td {
-            border-bottom-color: var(--dark-border-color);
+            border-bottom-color: var(--hijri-date-bg);
+            border-left-color: var(--hijri-date-bg);
+            background-color: var(--hijri-date-bg);
         }
 
         .weekly-table .student-name {
@@ -1511,7 +1599,7 @@
             }
             
             body.dark-mode .students-table.table-responsive {
-                border-color: var(--dark-border-color);
+                border-color: var(--hijri-date-bg);
             }
             
             /* تحسين رأس الجدول */
@@ -1550,8 +1638,9 @@
             
             body.dark-mode .students-table.table-responsive th,
             body.dark-mode .students-table.table-responsive td {
-                border-bottom-color: var(--dark-border-color);
-                border-left-color: var(--dark-border-color);
+                border-bottom-color: var(--hijri-date-bg);
+                border-left-color: var(--hijri-date-bg);
+                background-color: var(--hijri-date-bg);
             }
             
             .students-table.table-responsive th {
@@ -1832,7 +1921,7 @@
             }
             
             body.dark-mode #students .add-student-form {
-                background-color: rgba(237, 209, 175, 0.05);
+                background-color: var(--hijri-date-bg);
             }
             
             #students .add-student-input {
@@ -1857,7 +1946,7 @@
             }
             
             body.dark-mode #attendance .date-container {
-                background-color: rgba(237, 209, 175, 0.05);
+                background-color: var(--hijri-date-bg);
             }
             
             /* تحسين عرض التاريخ الهجري في الهواتف */
@@ -1896,7 +1985,7 @@
             }
             
             body.dark-mode .weekly-table {
-                border-color: var(--dark-border-color);
+                border-color: var(--hijri-date-bg);
             }
             
             .weekly-table th,
@@ -1928,7 +2017,8 @@
             
             body.dark-mode .weekly-table th,
             body.dark-mode .weekly-table td {
-                border-left-color: var(--dark-border-color);
+                border-left-color: var(--hijri-date-bg);
+                background-color: var(--hijri-date-bg);
             }
             
             /* إزالة الفراغ السفلي على الهواتف فقط */
@@ -1977,7 +2067,7 @@
             }
             
             body.dark-mode #dailyTabContent .students-table {
-                border-color: var(--dark-border-color);
+                border-color: var(--hijri-date-bg);
             }
             
             #dailyTabContent .students-table thead {
@@ -2005,7 +2095,8 @@
             
             body.dark-mode #dailyTabContent .students-table th,
             body.dark-mode #dailyTabContent .students-table td {
-                border-bottom-color: var(--dark-border-color);
+                border-bottom-color: var(--hijri-date-bg);
+                background-color: var(--hijri-date-bg);
             }
             
             #dailyTabContent .students-table th {
@@ -2016,7 +2107,7 @@
             }
             
             body.dark-mode #dailyTabContent .students-table th {
-                background-color: rgba(237, 209, 175, 0.1);
+                background-color: var(--hijri-date-bg);
             }
             
             #dailyTabContent .students-table th:first-child,
@@ -2377,7 +2468,7 @@
             }
             
             body.dark-mode .mobile-nav-bar .nav-btn.active {
-                background-color: rgba(237, 209, 175, 0.15);
+                background-color: var(--hijri-date-bg);
             }
 
             .mobile-nav-bar .nav-btn i {
@@ -2835,7 +2926,7 @@
         }
 
         body.dark-mode .calendar-modal.month-only .calendar-days-container {
-            background-color: rgba(237, 209, 175, 0.05);
+            background-color: var(--hijri-date-bg);
             border-color: var(--dark-border-color);
         }
 
@@ -3124,6 +3215,46 @@
     </style>
 </head>
 <body>
+    <!-- ========================================
+         صفحة تسجيل الدخول
+         ======================================== -->
+    <div id="loginPage" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--light-bg); z-index: 10000; overflow: auto;">
+        <div style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+            
+            <!-- العنوان الرئيسي -->
+            <div style="text-align: center; margin-bottom: 40px;">
+                <div style="font-size: 3.5rem; margin-bottom: 10px;">📚</div>
+                <h1 style="color: var(--primary-color); font-size: 2.5rem; font-weight: bold; margin-bottom: 8px;">إدارة الحلقة القرآنية</h1>
+                <p style="color: var(--light-text); opacity: 0.7; font-size: 1.1rem;">منصة سهلة لإدارة حلقتك القرآنية</p>
+            </div>
+
+            <!-- البطاقة الرئيسية -->
+            <div class="login-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 35px; max-width: 400px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                
+                <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 25px; font-size: 1.5rem;">تسجيل الدخول</h2>
+                
+                <!-- زر تسجيل الدخول -->
+                <button id="googleSignInBtn" style="width: 100%; padding: 16px; background: white; border: 2px solid var(--border-color); border-radius: 12px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s; font-weight: normal; color: var(--light-text);">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20" alt="Google">
+                    <span>المتابعة بحساب Google</span>
+                </button>
+                
+                <!-- رسالة التحميل -->
+                <div id="loginLoading" style="display: none; margin-top: 20px; color: var(--primary-color); font-size: 0.95rem; text-align: center;">
+                    ⏳ جاري تسجيل الدخول...
+                </div>
+                
+                <!-- رسالة الخطأ -->
+                <div id="loginError" style="display: none; margin-top: 20px; background: var(--hijri-date-bg); color: #c33; padding: 12px; border-radius: 10px; font-size: 0.9rem; text-align: center;"></div>
+                
+                <!-- معلومات إضافية -->
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center;">
+                    <p style="margin: 0; color: var(--light-text); opacity: 0.6; font-size: 0.85rem;">🔒 آمن ومحمي</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- نافذة الملاحظات -->
     <div id="notesModal" class="modal-overlay">
         <div class="modal">
@@ -3330,6 +3461,16 @@
             </div>
             
             <button class="save-btn" id="saveSettingsBtn">حفظ</button>
+            
+            <!-- زر تسجيل الخروج -->
+            <div style="margin-top: 30px; padding-top: 25px; border-top: 2px solid var(--border-color);">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <p style="color: #666; font-size: 0.95rem;" id="currentUserEmail">مسجل الدخول كـ: ...</p>
+                </div>
+                <button class="save-btn" id="logoutBtn" style="background-color: #dc3545;">
+                    🚪 تسجيل الخروج
+                </button>
+            </div>
         </div>
     </div>
 
@@ -3998,6 +4139,18 @@
         }
 
         // ============================================
+        // إخفاء جميع العناصر حتى يتم التحقق من تسجيل الدخول
+        // ============================================
+        // ============================================
+        // إخفاء جميع العناصر حتى يتم التحقق من تسجيل الدخول
+        // ============================================
+        // نضيف class login-active في البداية
+        // Firebase سيزيله عند تسجيل الدخول الناجح
+        if (!window.location.hash) {
+            document.body.classList.add('login-active');
+        }
+        
+        // ============================================
         // بيانات التطبيق
         // ============================================
         let appData = {
@@ -4417,7 +4570,7 @@
             
             // تطبيق الأنماط للوضع الداكن
             if (document.body.classList.contains('dark-mode')) {
-                calendarDays.style.backgroundColor = 'rgba(237, 209, 175, 0.05)';
+                calendarDays.style.backgroundColor = 'var(--hijri-date-bg)';
                 calendarDays.style.borderColor = 'var(--dark-border-color)';
             }
             
@@ -4915,6 +5068,57 @@
         // حفظ البيانات في localStorage
         function saveData() {
             localStorage.setItem('halqaAppData', JSON.stringify(appData));
+            
+            // حفظ في Firestore أيضاً
+            if (currentUser) {
+                console.log('🔄 جاري حفظ البيانات في Firestore...');
+                saveAllDataToFirestore();
+            } else {
+                console.log('⚠️ لم يتم الحفظ في Firestore - المستخدم غير مسجل دخول');
+            }
+        }
+
+        // حفظ كل البيانات إلى Firestore
+        async function saveAllDataToFirestore() {
+            if (!currentUser) {
+                console.warn('⚠️ لا يمكن الحفظ - currentUser is null');
+                return;
+            }
+            
+            console.log('📤 بدء الحفظ في Firestore للمستخدم:', currentUser.uid);
+            
+            try {
+                // حفظ البيانات الرئيسية
+                console.log('📝 حفظ البيانات الرئيسية:', {
+                    students: appData.students.length,
+                    halqaName: appData.halqaName
+                });
+                
+                await db.collection('users').doc(currentUser.uid).collection('appData').doc('main').set({
+                    halqaName: appData.halqaName,
+                    teacherName: appData.teacherName,
+                    students: appData.students,
+                    attendance: appData.attendance,
+                    tarteeb: appData.tarteeb,
+                    notes: appData.notes,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log('✅ تم حفظ البيانات الرئيسية');
+                
+                // حفظ الإعدادات
+                await db.collection('users').doc(currentUser.uid).collection('appData').doc('settings').set({
+                    theme: appData.theme,
+                    darkMode: appData.darkMode,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                console.log('✅ تم حفظ الإعدادات');
+                console.log('🎉 ✅ تم حفظ كل البيانات في Firestore بنجاح!');
+            } catch (error) {
+                console.error('❌ خطأ في حفظ البيانات في Firestore:', error);
+                console.error('تفاصيل الخطأ:', error.message);
+            }
         }
 
         // تحديث واجهة المستخدم بناءً على البيانات
@@ -7577,6 +7781,300 @@
 
         };
     
+    </script>
+
+    <!-- ========================================
+         نظام Firebase و تسجيل الدخول
+         ======================================== -->
+    <script>
+        // ========================================
+        // 1. تهيئة Firebase
+        // ========================================
+        // ⚠️ مهم جداً: استبدل هذه البيانات ببياناتك من Firebase Console!
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCzVCdpVVKqcEu1YcymldifYQpzZzEppY",
+            authDomain: "halaqa-b8355.firebaseapp.com",
+            projectId: "halaqa-b8355",
+            storageBucket: "halaqa-b8355.firebasestorage.app",
+            messagingSenderId: "697898474978",
+            appId: "1:697898474978:web:6d32c21773df8306196dbb"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        console.log('✅ Firebase initialized');
+
+        // ========================================
+        // 2. متغيرات عامة
+        // ========================================
+        let currentUser = null;
+
+        // العناصر
+        const loginPage = document.getElementById('loginPage');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const loginLoading = document.getElementById('loginLoading');
+        const loginError = document.getElementById('loginError');
+
+        // ========================================
+        // 3. زر تسجيل الدخول
+        // ========================================
+        googleSignInBtn.addEventListener('click', async () => {
+            loginLoading.style.display = 'block';
+            loginError.style.display = 'none';
+
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const result = await auth.signInWithPopup(provider);
+                console.log('✅ تم تسجيل الدخول:', result.user.displayName);
+            } catch (error) {
+                console.error('❌ خطأ في تسجيل الدخول:', error);
+                loginError.textContent = `❌ حدث خطأ: ${error.message}`;
+                loginError.style.display = 'block';
+                loginLoading.style.display = 'none';
+            }
+        });
+
+        // ========================================
+        // 4. مراقبة حالة تسجيل الدخول
+        // ========================================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // ✅ المستخدم مسجل دخول
+                console.log('✅ مرحباً', user.displayName);
+                currentUser = user;
+
+                // حفظ معلومات المستخدم الأساسية
+                await db.collection('users').doc(user.uid).set({
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL,
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                // إخفاء صفحة تسجيل الدخول
+                loginPage.style.display = 'none';
+                document.body.classList.remove('login-active');
+
+                // تحميل بيانات المستخدم من Firestore
+                await loadUserDataFromFirestore();
+
+                // عرض الصفحة الرئيسية
+                const homeContainer = document.querySelector('.home-container');
+                const studentsPage = document.getElementById('students');
+                
+                // للحاسب: عرض home-container
+                if (window.innerWidth >= 768) {
+                    if (homeContainer) {
+                        homeContainer.style.display = 'flex';
+                    }
+                    // إخفاء باقي الصفحات
+                    document.querySelectorAll('.page').forEach(page => {
+                        page.style.display = 'none';
+                    });
+                } else {
+                    // للجوال: فتح صفحة إدارة الطلاب مباشرة
+                    if (homeContainer) {
+                        homeContainer.style.display = 'none';
+                    }
+                    if (studentsPage) {
+                        studentsPage.style.display = 'block';
+                    }
+                    // إخفاء باقي الصفحات
+                    document.querySelectorAll('.page').forEach(page => {
+                        if (page.id !== 'students') {
+                            page.style.display = 'none';
+                        }
+                    });
+                }
+
+            } else {
+                // ❌ المستخدم غير مسجل دخول
+                console.log('❌ يجب تسجيل الدخول');
+                currentUser = null;
+
+                // عرض صفحة تسجيل الدخول
+                loginPage.style.display = 'block';
+                document.body.classList.add('login-active');
+
+                // إخفاء كل الصفحات الأخرى
+                document.querySelectorAll('.page, .home-container').forEach(page => {
+                    page.style.display = 'none';
+                });
+            }
+        });
+
+        // ========================================
+        // 5. تحميل بيانات المستخدم من Firestore
+        // ========================================
+        async function loadUserDataFromFirestore() {
+            if (!currentUser) {
+                console.warn('⚠️ لا يمكن التحميل - currentUser is null');
+                return;
+            }
+            
+            try {
+                console.log('📥 بدء تحميل البيانات من Firestore للمستخدم:', currentUser.uid);
+
+                // تحميل البيانات الرئيسية
+                const dataDoc = await db.collection('users').doc(currentUser.uid).collection('appData').doc('main').get();
+                if (dataDoc.exists) {
+                    const data = dataDoc.data();
+                    
+                    console.log('📊 البيانات المحملة:', {
+                        students: data.students?.length || 0,
+                        halqaName: data.halqaName
+                    });
+                    
+                    if (data.halqaName) appData.halqaName = data.halqaName;
+                    if (data.teacherName) appData.teacherName = data.teacherName;
+                    if (data.students) appData.students = data.students;
+                    if (data.attendance) appData.attendance = data.attendance;
+                    if (data.tarteeb) appData.tarteeb = data.tarteeb;
+                    if (data.notes) appData.notes = data.notes;
+                    
+                    console.log('✅ تم تحميل البيانات الرئيسية');
+                } else {
+                    console.log('ℹ️ لا توجد بيانات محفوظة - مستخدم جديد');
+                }
+
+                // تحميل الإعدادات
+                const settingsDoc = await db.collection('users').doc(currentUser.uid).collection('appData').doc('settings').get();
+                if (settingsDoc.exists) {
+                    const settings = settingsDoc.data();
+                    
+                    if (settings.theme) {
+                        appData.theme = settings.theme;
+                        if (settings.theme === 'ek') {
+                            document.body.classList.add('theme-eklyli');
+                        }
+                    }
+
+                    if (settings.darkMode !== undefined) {
+                        appData.darkMode = settings.darkMode;
+                        if (settings.darkMode) {
+                            document.body.classList.add('dark-mode');
+                        }
+                    }
+
+                    console.log('✅ تم تحميل الإعدادات');
+                }
+
+                // تحديث الواجهة
+                updateUI();
+                renderStudentsList();
+                
+                console.log('🎉 ✅ تم تحميل جميع البيانات بنجاح!');
+
+            } catch (error) {
+                console.error('❌ خطأ في تحميل البيانات من Firestore:', error);
+                console.error('تفاصيل الخطأ:', error.message);
+                // في حالة الخطأ، نحمل من localStorage
+                loadDataFromLocalStorage();
+            }
+        }
+
+        // تحميل البيانات من localStorage (كنسخة احتياطية)
+        function loadDataFromLocalStorage() {
+            const savedData = localStorage.getItem('halqaAppData');
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    Object.assign(appData, parsedData);
+                    updateUI();
+                    renderStudentsList();
+                    console.log('✅ تم تحميل البيانات من localStorage');
+                } catch (error) {
+                    console.error('❌ خطأ في قراءة localStorage:', error);
+                }
+            }
+        }
+
+        // ========================================
+        // 6. حفظ البيانات إلى Firestore
+        // ========================================
+        
+        // حفظ الطلاب
+        async function saveStudentsToFirestore() {
+            if (!currentUser) return;
+            
+            try {
+                await db.collection(userDataPath).doc('students').set({
+                    list: students,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log('✅ تم حفظ الطلاب في Firestore');
+            } catch (error) {
+                console.error('❌ خطأ في حفظ الطلاب:', error);
+            }
+        }
+
+        // حفظ الإعدادات
+        async function saveSettingsToFirestore() {
+            if (!currentUser) return;
+            
+            try {
+                await db.collection(userDataPath).doc('settings').set({
+                    halqaName: halqaName,
+                    teacherName: teacherName,
+                    theme: document.body.classList.contains('theme-eklyli') ? 'eklyli' : 'sahrawi',
+                    darkMode: document.body.classList.contains('dark-mode'),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                console.log('✅ تم حفظ الإعدادات في Firestore');
+            } catch (error) {
+                console.error('❌ خطأ في حفظ الإعدادات:', error);
+            }
+        }
+
+        // حفظ الحضور
+        async function saveAttendanceToFirestore(date, hijriDate, attendanceData) {
+            if (!currentUser) return;
+            
+            try {
+                await db.collection(userDataPath).doc('attendance').collection('records').doc(date).set({
+                    date: date,
+                    hijriDate: hijriDate,
+                    students: attendanceData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log('✅ تم حفظ الحضور في Firestore');
+            } catch (error) {
+                console.error('❌ خطأ في حفظ الحضور:', error);
+            }
+        }
+
+        // ========================================
+        // 7. زر تسجيل الخروج
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logoutBtn');
+            const currentUserEmail = document.getElementById('currentUserEmail');
+            
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    if (confirm('هل تريد تسجيل الخروج؟')) {
+                        try {
+                            await auth.signOut();
+                            console.log('✅ تم تسجيل الخروج');
+                        } catch (error) {
+                            console.error('❌ خطأ في تسجيل الخروج:', error);
+                            alert('حدث خطأ في تسجيل الخروج');
+                        }
+                    }
+                });
+            }
+            
+            // تحديث معلومات المستخدم في صفحة الإعدادات
+            auth.onAuthStateChanged((user) => {
+                if (user && currentUserEmail) {
+                    currentUserEmail.textContent = `مسجل الدخول كـ: ${user.email}`;
+                }
+            });
+        });
+
     </script>
 </body>
 </html>
