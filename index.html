@@ -960,6 +960,7 @@
         body.dark-mode .students-table th {
             background-color: var(--hijri-date-bg);
             color: white;
+            border: 1px solid var(--dark-bg);
         }
 
         .students-table th:first-child,
@@ -978,7 +979,12 @@
         body.dark-mode .students-table th:first-child,
         body.dark-mode .students-table td:first-child {
             background-color: var(--hijri-date-bg);
+            border: 1px solid var(--dark-bg);
             color: white;
+        }
+
+        .avrg{
+            border-top: 2px solid var(--primary-color);
         }
 
         .attendance-options {
@@ -1222,7 +1228,7 @@
         .modal-btn {
             padding: 10px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 17px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: bold;
@@ -1367,7 +1373,7 @@
 
         #harvest .students-table td:first-child {
             text-align: center;
-            width: 60px;
+            width: 115px;
         }
 
         #harvest .students-table th {
@@ -1528,7 +1534,12 @@
             background-color: var(--dark-bg);
         }
 
-        body.dark-mode .weekly-table th, 
+        body.dark-mode .weekly-table th {
+            border-bottom: 1px solid var(--dark-bg);
+            border-left-color: var(--dark-bg);
+            background-color: var(--hijri-date-bg);
+        }
+
         body.dark-mode .weekly-table td {
             border-bottom-color: var(--hijri-date-bg);
             border-left-color: var(--hijri-date-bg);
@@ -1581,7 +1592,7 @@
         }
 
         body.dark-mode .progress-bar {
-            background-color: #3a2c1c;
+            background-color: var(--dark-border-color);
         }
 
         /* تحسينات للجداول */
@@ -1669,9 +1680,8 @@
             
             body.dark-mode .students-table.table-responsive th,
             body.dark-mode .students-table.table-responsive td {
-                border-bottom-color: var(--hijri-date-bg);
-                border-left-color: var(--hijri-date-bg);
-                background-color: var(--hijri-date-bg);
+                border: 1px solid var(--dark-bg);
+                background-color: var(--dark-bg);
             }
             
             .students-table.table-responsive th {
@@ -1694,13 +1704,14 @@
                 position: sticky;
                 left: 0;
                 z-index: 10;
-                background-color: var(--card-bg);
+                background-color: var(--hijri-date-bg);
                 font-weight: bold;
             }
             
             body.dark-mode .students-table.table-responsive th:first-child,
             body.dark-mode .students-table.table-responsive td:first-child {
-                background-color: var(--dark-card-bg);
+                background-color: var(--hijri-date-bg);
+                border: 1px solid var(--dark-bg);
             }
             
             /* تحسين عمود الإجراءات في صفحة إدارة الطلاب */
@@ -1918,29 +1929,6 @@
                 vertical-align: middle;
             }
             
-            /* تأثير hover على صفوف الجداول */
-            .students-table.table-responsive tbody tr {
-                transition: background-color 0.2s ease, transform 0.2s ease;
-            }
-            
-            .students-table.table-responsive tbody tr:hover {
-                background-color: rgba(255, 216, 166, 0.3) !important;
-                transform: scale(1.005);
-            }
-            
-            body.dark-mode .students-table.table-responsive tbody tr:hover {
-                background-color: rgba(255, 216, 166, 0.2) !important;
-            }
-            
-            /* تأثير hover للنسق الإكليلي */
-            body.theme-eklyli .students-table.table-responsive tbody tr:hover {
-                background-color: rgba(216, 182, 191, 0.25) !important;
-            }
-            
-            body.theme-eklyli.dark-mode .students-table.table-responsive tbody tr:hover {
-                background-color: rgba(216, 182, 191, 0.15) !important;
-            }
-            
             /* تحسينات خاصة لصفحة إدارة الطلاب */
             #students .add-student-form {
                 flex-direction: column;
@@ -2120,8 +2108,10 @@
             
             body.dark-mode #dailyTabContent .students-table th,
             body.dark-mode #dailyTabContent .students-table td {
-                border-bottom-color: var(--hijri-date-bg);
-                background-color: var(--hijri-date-bg);
+                border-bottom-color: var(--dark-bg);
+                border-left-color: var(--dark-bg);
+                border-right-color: var(--dark-bg);
+                background-color: var(--dark-bg);
             }
             
             #dailyTabContent .students-table th {
@@ -2143,13 +2133,14 @@
                 position: sticky;
                 left: 0;
                 z-index: 10;
-                background-color: var(--card-bg);
+                background-color: var(--hijri-date-bg);
                 font-weight: bold;
             }
             
             body.dark-mode #dailyTabContent .students-table th:first-child,
             body.dark-mode #dailyTabContent .students-table td:first-child {
-                background-color: var(--dark-card-bg);
+                background-color: var(--hijri-date-bg);
+                border-left-color: var(--dark-bg);
             }
             
             #dailyTabContent .students-table .student-name {
@@ -2304,7 +2295,8 @@
         body.dark-mode #harvest .students-table tbody tr:hover,
         body.dark-mode #harvest .weekly-table tbody tr:hover {
             background-color: var(--primary-light) !important;
-            opacity: 0.4;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
         }
 
         #harvest .students-table tbody tr,
@@ -2486,6 +2478,7 @@
                 );
                 -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
                 -webkit-mask-composite: xor;
+                mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
                 mask-composite: exclude;
                 pointer-events: none;
                 animation: liquidBorder 3s ease-in-out infinite;
@@ -4521,6 +4514,9 @@
         let tempTheme = appData.theme; // نسق مؤقت للعرض في الإعدادات
         let originalTheme = appData.theme; // حفظ النسق الأصلي للرجوع إليه إذا لم يتم الحفظ
 
+        // متغير Firebase
+        let currentUser = null;
+
         // إعدادات عدد الطلاب في الصفحة
         const STUDENTS_PER_PAGE = 10;
 
@@ -5356,15 +5352,27 @@
                 // إخفاء زر العودة في الهواتف
                 document.getElementById('backBtn').style.display = 'none';
             } else {
-                // في الحاسب، إظهار الصفحة الرئيسية
+                // في الحاسب والتابلت، نحافظ على الصفحة النشطة الحالية
+                let currentActivePage = null;
                 Object.keys(pages).forEach(key => {
-                    pages[key].classList.remove('active');
-                    pages[key].style.display = 'none';
+                    if (pages[key].classList.contains('active')) {
+                        currentActivePage = key;
+                    }
                 });
-                pages.home.classList.add('active');
-                pages.home.style.display = 'block';
-                pages.home.style.visibility = 'visible';
-                pages.home.style.opacity = '1';
+                
+                // إذا لم تكن هناك صفحة نشطة أو الصفحة النشطة ليست home، نعرض home
+                // لكن إذا كانت هناك صفحة نشطة، نحافظ عليها
+                if (!currentActivePage) {
+                    Object.keys(pages).forEach(key => {
+                        pages[key].classList.remove('active');
+                        pages[key].style.display = 'none';
+                    });
+                    pages.home.classList.add('active');
+                    pages.home.style.display = 'block';
+                    pages.home.style.visibility = 'visible';
+                    pages.home.style.opacity = '1';
+                }
+                // إذا كانت هناك صفحة نشطة بالفعل، لا نغيرها
                 
                 // إخفاء حاوية التاريخ الهجري في صفحة إدارة الطلاب
                 document.getElementById('mobileHijriDateContainer').style.display = 'none';
@@ -6467,11 +6475,11 @@
                     </tbody>
                     <tfoot class="table-footer">
                         <tr>
-                            <td colspan="2">متوسط الفصل</td>
-                            <td class="stat-present">${totalAttendanceRate}%</td>
-                            <td class="stat-save">${totalSaveRate}%</td>
-                            <td class="stat-review">${totalReviewRate}%</td>
-                            <td class="total-column">
+                            <td colspan="2" style="border-top: 2px solid var(--primary-color);">متوسط الفصل</td>
+                            <td class="stat-present" style="background-color: var(--hijri-date-bg); border-left-color: var(--dark-bg);">${totalAttendanceRate}%</td>
+                            <td class="stat-save" style="background-color: var(--hijri-date-bg); border-left-color: var(--dark-bg);">${totalSaveRate}%</td>
+                            <td class="stat-review" style="background-color: var(--hijri-date-bg); border-left-color: var(--dark-bg);">${totalReviewRate}%</td>
+                            <td class="total-column" style="background-color: var(--hijri-date-bg); border-left-color: var(--dark-bg);">
                                 <div style="text-align: center; font-weight: bold; color: var(--primary-color); font-size: 1.1rem;">
                                     ${overallRate}%
                                 </div>
@@ -8307,7 +8315,7 @@
         // ========================================
         // 2. متغيرات عامة
         // ========================================
-        let currentUser = null;
+        // currentUser معرّف في النطاق العام (قبل قسم Firebase)
 
         // العناصر
         const loginPage = document.getElementById('loginPage');
@@ -8632,7 +8640,7 @@
             // تحديث معلومات المستخدم في صفحة الإعدادات
             auth.onAuthStateChanged((user) => {
                 if (user && currentUserEmail) {
-                    currentUserEmail.textContent = `مسجل الدخول كـ: ${user.email}`;
+                    currentUserEmail.textContent = `تم تسجيل الدخول بالبريد الإلكتروني التالي: ${user.email}`;
                 }
             });
         });
