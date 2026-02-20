@@ -207,6 +207,55 @@
             transition: opacity 0.3s ease;
         }
 
+        /* ======================================== */
+        /* غطاء التحميل بعد تسجيل الدخول           */
+        /* ======================================== */
+        #appLoadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background-color: var(--light-bg);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            transition: opacity 0.4s ease;
+        }
+
+        body.dark-mode #appLoadingOverlay {
+            background-color: var(--dark-bg);
+        }
+
+        #appLoadingOverlay.visible {
+            display: flex;
+        }
+
+        #appLoadingOverlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .app-loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--primary-light);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: appSpinnerRotate 0.8s linear infinite;
+        }
+
+        @keyframes appSpinnerRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .app-loading-text {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-family: 'Amiri', serif;
+        }
+
         /* تنسيق الوضع الداكن لصفحة تسجيل الدخول */
         body.dark-mode #loginPage {
             background-color: var(--dark-bg);
@@ -642,49 +691,47 @@
             font-size: 1.1rem;
         }
 
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
+        /* Segmented Control للوضع الداكن */
+        .darkmode-segmented-control {
+            display: flex;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
         }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
+        .darkmode-segmented-btn {
+            flex: 1;
+            padding: 10px 18px;
+            border: none;
+            background-color: transparent;
+            color: var(--light-text);
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
+        .darkmode-segmented-btn.active {
             background-color: var(--primary-color);
+            color: white;
         }
 
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
+        body.dark-mode .darkmode-segmented-control {
+            background-color: var(--dark-card-bg);
+            border-color: var(--dark-border-color);
+        }
+
+        body.dark-mode .darkmode-segmented-btn {
+            color: var(--dark-text);
+        }
+
+        body.dark-mode .darkmode-segmented-btn.active {
+            background-color: var(--primary-color);
+            color: white;
         }
 
         .save-btn {
@@ -3578,6 +3625,14 @@
         </div>
     </div>
 
+    <!-- ========================================
+         غطاء التحميل بعد تسجيل الدخول
+         ======================================== -->
+    <div id="appLoadingOverlay">
+        <div class="app-loading-spinner"></div>
+        <div class="app-loading-text">جاري تحميل بياناتك...</div>
+    </div>
+
     <!-- نافذة الملاحظات -->
     <div id="notesModal" class="modal-overlay">
         <div class="modal">
@@ -3839,11 +3894,15 @@
             </div>
             
             <div class="toggle-container">
-                <span class="toggle-label">الوضع الداكن:</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="darkModeToggle">
-                    <span class="toggle-slider"></span>
-                </label>
+                <span class="toggle-label">المظهر:</span>
+                <div class="darkmode-segmented-control" id="darkModeSegmented">
+                    <button class="darkmode-segmented-btn active" data-mode="light">
+                        <i class="fas fa-sun"></i> ضوئي
+                    </button>
+                    <button class="darkmode-segmented-btn" data-mode="dark">
+                        <i class="fas fa-moon"></i> ليلي
+                    </button>
+                </div>
             </div>
             
             <button class="save-btn" id="saveSettingsBtn">حفظ</button>
@@ -4633,6 +4692,7 @@
 
         // متغير Firebase
         let currentUser = null;
+        let isLoggingOut = false;
 
         // إعدادات عدد الطلاب في الصفحة
         const STUDENTS_PER_PAGE = 10;
@@ -5435,8 +5495,16 @@
                     // لا نقوم بتطبيق النسق هنا، فقط نحدد الزر النشط
                 });
             });
-        }
 
+            // Segmented Control للمظهر (ضوئي / ليلي)
+            const darkModeBtns = document.querySelectorAll('#darkModeSegmented .darkmode-segmented-btn');
+            darkModeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    darkModeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
 
         // تهيئة واجهة الهواتف
         function initializeMobileUI() {
@@ -5648,7 +5716,16 @@
             }
             document.getElementById('teacherName').value = teacherName;
             
-            document.getElementById('darkModeToggle').checked = appData.darkMode;
+            document.getElementById('darkModeToggle') && (document.getElementById('darkModeToggle').checked = appData.darkMode);
+            
+            // تحديث Segmented Control للمظهر
+            const darkModeBtns = document.querySelectorAll('#darkModeSegmented .darkmode-segmented-btn');
+            darkModeBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if ((btn.dataset.mode === 'dark') === appData.darkMode) {
+                    btn.classList.add('active');
+                }
+            });
             
             // تحديث الصفحة الرئيسية
             document.getElementById('halqaNameDisplay').textContent = appData.halqaName;
@@ -5686,7 +5763,8 @@
             }
             appData.teacherName = teacherName;
             
-            appData.darkMode = document.getElementById('darkModeToggle').checked;
+            const activeMode = document.querySelector('#darkModeSegmented .darkmode-segmented-btn.active');
+            appData.darkMode = activeMode ? activeMode.dataset.mode === 'dark' : false;
             
             // تطبيق النسق المؤقت كنسق دائم
             appData.theme = tempTheme;
@@ -8507,22 +8585,41 @@
                 console.log('✅ مرحباً', user.displayName);
                 currentUser = user;
 
-                // حفظ معلومات المستخدم الأساسية
-                await db.collection('users').doc(user.uid).set({
-                    displayName: user.displayName,
-                    email: user.email,
-                    photoURL: user.photoURL,
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                // إخفاء صفحة تسجيل الدخول
+                // إخفاء صفحة تسجيل الدخول وإظهار غطاء التحميل
                 loginPage.style.display = 'none';
                 document.body.classList.remove('login-active');
 
-                // تحميل بيانات المستخدم من Firestore
-                await loadUserDataFromFirestore();
+                const loadingOverlay = document.getElementById('appLoadingOverlay');
+                if (loadingOverlay) loadingOverlay.classList.add('visible');
 
-                // عرض الصفحة الرئيسية
+                // إخفاء رسالة "جاري تسجيل الدخول..."
+                const loginLoading = document.getElementById('loginLoading');
+                if (loginLoading) loginLoading.style.display = 'none';
+
+                try {
+                    // حفظ معلومات المستخدم الأساسية
+                    await db.collection('users').doc(user.uid).set({
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+
+                    // تحميل بيانات المستخدم من Firestore (ألوان، نسق، اسم، طلاب...)
+                    await loadUserDataFromFirestore();
+                } catch(e) {
+                    console.error('❌ خطأ أثناء تهيئة البيانات:', e);
+                }
+
+                // إخفاء غطاء التحميل بعد اكتمال البيانات (مع انتقال ناعم)
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingOverlay.classList.remove('visible', 'fade-out');
+                    }, 400);
+                }
+
+                // عرض الصفحة الرئيسية بعد اكتمال التحميل
                 const homeContainer = document.querySelector('.home-container');
                 const studentsPage = document.getElementById('students');
                 
@@ -8549,13 +8646,26 @@
                             page.style.display = 'none';
                         }
                     });
-
                 }
 
             } else {
                 // ❌ المستخدم غير مسجل دخول
                 console.log('❌ يجب تسجيل الدخول');
                 currentUser = null;
+
+                // إذا كان تسجيل الخروج جاريًا، لا تتدخل — الـ handler يتحكم بالغطاء والصفحة
+                if (isLoggingOut) return;
+
+                // إخفاء غطاء التحميل إن كان ظاهرًا
+                const loadingOverlay = document.getElementById('appLoadingOverlay');
+                if (loadingOverlay && loadingOverlay.classList.contains('visible')) {
+                    loadingOverlay.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingOverlay.classList.remove('visible', 'fade-out');
+                        const loadingText = loadingOverlay.querySelector('.app-loading-text');
+                        if (loadingText) loadingText.textContent = 'جاري تحميل بياناتك...';
+                    }, 400);
+                }
 
                 // عرض صفحة تسجيل الدخول
                 loginPage.style.display = 'block';
@@ -8789,13 +8899,37 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', async () => {
                     showLogoutConfirmModal(async () => {
+                        // إظهار غطاء التحميل مع نص تسجيل الخروج
+                        const loadingOverlay = document.getElementById('appLoadingOverlay');
+                        const loadingText = loadingOverlay ? loadingOverlay.querySelector('.app-loading-text') : null;
+                        if (loadingText) loadingText.textContent = 'جاري تسجيل خروجك...';
+                        if (loadingOverlay) loadingOverlay.classList.add('visible');
+
+                        isLoggingOut = true;
+                        const minDelay = new Promise(resolve => setTimeout(resolve, 7000));
+
                         try {
-                            await auth.signOut();
+                            await Promise.all([auth.signOut(), minDelay]);
                             console.log('✅ تم تسجيل الخروج');
                         } catch (error) {
                             console.error('❌ خطأ في تسجيل الخروج:', error);
-                            const texts = textDictionary[appData.theme];
+                            await minDelay;
                             showAlertModal('خطأ', 'حدث خطأ في تسجيل الخروج');
+                        } finally {
+                            isLoggingOut = false;
+                            // إخفاء الغطاء وإظهار صفحة تسجيل الدخول
+                            if (loadingOverlay) {
+                                loadingOverlay.classList.add('fade-out');
+                                setTimeout(() => {
+                                    loadingOverlay.classList.remove('visible', 'fade-out');
+                                    if (loadingText) loadingText.textContent = 'جاري تحميل بياناتك...';
+                                    // إظهار صفحة تسجيل الدخول
+                                    const loginPage = document.getElementById('loginPage');
+                                    if (loginPage) loginPage.style.display = 'block';
+                                    document.body.classList.add('login-active');
+                                    document.querySelectorAll('.page, .home-container').forEach(p => p.style.display = 'none');
+                                }, 400);
+                            }
                         }
                     });
                 });
